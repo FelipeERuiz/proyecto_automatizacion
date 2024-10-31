@@ -16,10 +16,10 @@ logger:
 # Configuración del OTA para actualizaciones inalámbricas
 ota:
 
-# Configuración del sensor DHT22
+# Configuración del sensor DHT22 (Temperatura y Humedad)
 sensor:
   - platform: dht
-    pin: GPIO15
+    pin: GPIO15  
     model: DHT22
     temperature:
       name: "Temperatura del Hogar"
@@ -30,7 +30,7 @@ sensor:
 # Configuración del LED
 output:
   - platform: gpio
-    pin: GPIO2
+    pin: GPIO2  
     id: led_output
 
 light:
@@ -41,7 +41,7 @@ light:
 # Configuración del buzzer
 output:
   - platform: gpio
-    pin: GPIO4
+    pin: GPIO4  
     id: buzzer_output
 
 switch:
@@ -51,3 +51,20 @@ switch:
       - output.turn_on: buzzer_output
     turn_off_action:
       - output.turn_off: buzzer_output
+
+# Configuración del Receptor IR
+remote_receiver:
+  pin: GPIO14 
+  dump: all  # Para mostrar todos los comandos en los logs
+  tolerance: 50%
+  filter: 10us
+  idle: 4ms
+
+binary_sensor:
+  - platform: remote_receiver
+    name: "Botón del Control Remoto"
+    # Coloca el código del botón específico que desees monitorear
+    raw: [12345, -6789, 2345, -6789]  # Ejemplo, cambia a los valores específicos de tu control
+    on_press:
+      - light.toggle: led_output
+      - switch.toggle: buzzer_output
